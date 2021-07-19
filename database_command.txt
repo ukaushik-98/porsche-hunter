@@ -1,0 +1,72 @@
+Create Porsche Hunter DB:
+           List of relations
+ Schema |   Name    | Type  |  Owner
+--------+-----------+-------+----------
+ public | cars      | table | postgres
+ public | hunts     | table | postgres
+ public | locations | table | postgres
+ public | users     | table | postgres
+(4 rows)
+
+Command: 
+create database porsche_hunter;
+
+Create Users Table:
+                                Table "public.users"
+  Column  |  Type   | Collation | Nullable |                Default
+----------+---------+-----------+----------+----------------------------------------
+ user_id  | integer |           | not null | nextval('users_user_id_seq'::regclass)
+ email    | text    |           | not null |
+ password | text    |           | not null |
+Indexes:
+    "users_pkey" PRIMARY KEY, btree (user_id)
+
+Command:
+create table users (user_id serial primary key, email text not null, password text not null);
+
+Create Cars Table:
+                              Table "public.cars"
+ Column |  Type   | Collation | Nullable |               Default
+--------+---------+-----------+----------+--------------------------------------
+ car_id | integer |           | not null | nextval('cars_car_id_seq'::regclass)
+ model  | text    |           | not null |
+ type   | text    |           | not null |
+Indexes:
+    "cars_pkey" PRIMARY KEY, btree (car_id)
+Referenced by:
+    TABLE "hunts" CONSTRAINT "hunts_car_id_fkey" FOREIGN KEY (car_id) REFERENCES cars(car_id)
+
+Command:
+create table cars (car_id serial primary key, model text not null, type text not null);
+
+Create Locations Table:
+                                   Table "public.locations"
+   Column    |  Type   | Collation | Nullable |                    Default
+-------------+---------+-----------+----------+------------------------------------------------
+ location_id | integer |           | not null | nextval('locations_location_id_seq'::regclass)
+ name        | text    |           | not null |
+Indexes:
+    "locations_pkey" PRIMARY KEY, btree (location_id)
+Referenced by:
+    TABLE "hunts" CONSTRAINT "hunts_location_id_fkey" FOREIGN KEY (location_id) REFERENCES locations(location_id)
+
+Command:
+create table locations (location_id serial primary key, name text not null);
+
+Create Hunts Table:
+                                 Table "public.hunts"
+   Column    |  Type   | Collation | Nullable |                Default
+-------------+---------+-----------+----------+----------------------------------------
+ hunt_id     | integer |           | not null | nextval('hunts_hunt_id_seq'::regclass)
+ user_id     | integer |           | not null |
+ car_id      | integer |           | not null |
+ location_id | text    |           | not null |
+ image       | bytea   |           |          |
+Indexes:
+    "hunts_pkey" PRIMARY KEY, btree (hunt_id)
+Foreign-key constraints:
+    "hunts_car_id_fkey" FOREIGN KEY (car_id) REFERENCES cars(car_id)
+    "hunts_user_id_fkey" FOREIGN KEY (user_id) REFERENCES users(user_id)
+
+Command:  
+create table hunts (hunt_id serial primary key, user_id int not null, car_id int not null, location_id int not null, image bytea, foreign key (user_id) references users (user_id), foreign key (car_id) references cars (car_id), foreign key (location_id) references locations (location_id));
