@@ -134,6 +134,12 @@ router.put('/:id', upload.array('images'), auth, [
             await db.query('BEGIN');
             const {car_model, car_type, location} = req.body;   // multer parse
             const id = req.user.id; // id decoded in auth and populated in req.user property
+            // Run query to see who owns the post
+            const check = await db.query('SELECT * FROM hunts where hunt_id = $1', [req.params.id]);
+            if (id !== check.rows[0].user_id) {
+                // Return error if user does not own post
+                return res.status(400).json({ msg: 'User does not have permissions on this post!' })
+            }
             // Update query
             const {rows} = await db.query('Update hunts set user_id = $1, car_model = $2, car_type = $3, location = $4 where hunt_id = $5 RETURNING *', [id, car_model, car_type, location, req.params.id]);
             if (!rows) return res.status(400).json({ msg: 'Post creation failed!' });
