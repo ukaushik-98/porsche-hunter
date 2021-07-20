@@ -1,10 +1,11 @@
+//Dependencies 
 const express = require('express');
-const {check, validationResult } = require('express-validator');
+const {check, validationResult } = require('express-validator');  // Use Inbuilt Express authentication
 const router = express.Router();
-const db = require('../../database');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken')
-const config = require('../../config/default');
+const db = require('../../database');   // Import query function from created database folder
+const bcrypt = require('bcryptjs'); // Encryption for password
+const jwt = require('jsonwebtoken') // Generate Token for authentication
+const config = require('../../config/default'); //config info
 
 
 // @route GET api/users
@@ -47,20 +48,22 @@ router.get('/:id',
 );
 
 // @route POST api/users
-// @desc CREATE/UPDATE USERS + TOKEN GENERATION -> (RETURNING TOKEN)
+// @desc CREATE USERS + TOKEN GENERATION -> (RETURNING TOKEN)
 // @access PUBLIC
 router.post('/', [
+    // Express inbuilt validation
     check('email', "Not a valid email").isEmail(),
     check('password', 'Enter a password with 6 or more characters').isLength({min: 6})
 ],
     async(req,res) => {
-        const err = validationResult(req);
+        const err = validationResult(req);  //check if validation failed
         if (!err.isEmpty()) return res.status(400).json({errors: errors.array()});
         try {
             await db.query('BEGIN');
 
-            const {email, password} = req.body;
+            const {email, password} = req.body; // pull email and password from request
 
+            //Check if user already existing
             let user = await db.query('SELECT * from users where email = $1', [email]).rows;
 
             if (user) {
@@ -68,16 +71,20 @@ router.post('/', [
                 return res.status(400).json({ errors: [ {msg: 'User already exists'}]})
             };
 
-            const salt = await bcrypt.genSalt(10);
-            let epassword = await bcrypt.hash(password,salt);
+            const salt = await bcrypt.genSalt(10);  // encryption strength
+            let epassword = await bcrypt.hash(password,salt);   //hash encrypted password
+            // Create new user
             const {rows} = await db.query('INSERT INTO users (email, password) values($1,$2) RETURNING *', [email, epassword]);
 
+            // Define payload for token
             const payload = {
                 user: {
                     id: rows[0].user_id
                 }
             };
 
+            // Create and send token
+            // NOTE -> MAKE SURE TO UPDATE expiresIN when pusing to real environments
             jwt.sign(
                 payload, 
                 config['JWTSECRET'],
