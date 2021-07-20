@@ -1,6 +1,6 @@
-Markup: #Porsche Hunter#
+#Porsche Hunter
 
-Project:
+##Project:
 Create a NodeJS backend that handles an IOS device's inputs to do the following:
     - Create a new user
     - Log in as a new user
@@ -11,7 +11,7 @@ Create a NodeJS backend that handles an IOS device's inputs to do the following:
         - Loction where the car was found
     - Users should be able to view, update, and delete their posts
 
-Design Philosophy:
+##Design Philosophy:
     - Create a sessionless, RESTful API
         - Allow the possibility of horizontal scaling
         - Make routes indepndent of user and more robust in terms of security
@@ -23,7 +23,7 @@ Design Philosophy:
     - Identify and simplify potential object relationships for the future
         - Helps scaling and keeps hierarchies and dependencies clean
 
-Routes:
+##Routes:
     - Users:
         - GET "/api/users": Get all users <- test route
         - GET "/api/users/:id": Get user by ID <- test route
@@ -32,20 +32,21 @@ Routes:
         - GET "/api/hunts": Get all hunts <- test route
         - GET "/api/hunts/user": Get all hunts by user -> id taken by token
         - POST "/api/hunts": Create new hunt for user -> id taken by token
-        - PUT "api/hunts/:id": Update a hunt by id -> validates if user owns hunt
-        - DELETE "api/hunts/:id": Delete a hunt by id -> validates if user owns hunt
+        - PUT "api/hunts/:id": Update a hunt by hunt_id -> validates if user owns hunt
+        - DELETE "api/hunts/:id": Delete a hunt by hunt_id -> validates if user owns hunt
     - Authentication:
         - GET "/api/auth": Get user from passed token -> test route
         - POST "/api/auth": Creates a new auth token for user if valid
-    
+    - Images:
+        - GET "/uploads/:image_path": Get image from static uploads folder open to public 
 
-Potential Vulnerabilities or Errors:
+##Potential Vulnerabilities or Errors:
     - JWT's secret token could be leaked!
     - Improve password encryption's strength
     - Users can input random locations or cars 
         - Nothing validates that what they've inputed is actually a Porsche
 
-Project Specs:
+##Project Specs:
     - NodeJS: base of the API
     - ExpressJS: framework with inbuilt validation and parsing services
     - JWT: token that holds user's id and is responsible for not only user authentication but also CRUD
@@ -57,12 +58,12 @@ Project Specs:
     - Morgan for route information and time specs
     - Postgres
 
-Tools Used:
+##Tools Used:
     - Postman - for calls
     - PGAdmin - view DB
     - Ubuntu via WSL2 (Windows Subsystem for Linux)
 
-Future:
+##Future:
     - Include a React or React Native Client! (in development right now)
     - AWS Cloud Integration:
         - Push image uploads into S3
@@ -71,4 +72,4 @@ Future:
     - Data Validation:
         - Use Google Maps API to get user's live location OR authenticate whether input is valid
         - Gather all Porsche car data to validate user input 
-    - Add AI to validate if image is really a Porsche
+        - Add AI to validate if image is really a Porsche
