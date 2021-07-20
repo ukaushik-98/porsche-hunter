@@ -9,7 +9,7 @@ const config = require('../../config/default');
 
 // @route GET api/users
 // @desc List all users
-// @access PRIVATE -> TEST ROUTE
+// @access PUBLIC -> TEST ROUTE
 router.get('/', async(req,res) => {
     try{
         await db.query('BEGIN');
@@ -26,7 +26,7 @@ router.get('/', async(req,res) => {
 
 // @route GET api/users/:id
 // @desc List specific users
-// @access PRIVATE -> TEST ROUTE
+// @access PUBLIC -> TEST ROUTE
 router.get('/:id', 
     async(req,res) => {
         try {
@@ -47,7 +47,7 @@ router.get('/:id',
 );
 
 // @route POST api/users
-// @desc CREATE/UPDATE USERS
+// @desc CREATE/UPDATE USERS + TOKEN GENERATION -> (RETURNING TOKEN)
 // @access PUBLIC
 router.post('/', [
     check('email', "Not a valid email").isEmail(),
@@ -63,7 +63,10 @@ router.post('/', [
 
             let user = await db.query('SELECT * from users where email = $1', [email]).rows;
 
-            if (user) return res.status(400).json({ errors: [ {msg: 'User already exists'}]});
+            if (user) {
+                await db.query('ROLLBACK');
+                return res.status(400).json({ errors: [ {msg: 'User already exists'}]})
+            };
 
             const salt = await bcrypt.genSalt(10);
             let epassword = await bcrypt.hash(password,salt);

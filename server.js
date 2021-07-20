@@ -1,5 +1,6 @@
 //Dependencies
-var express = require('express');
+const express = require('express');
+const morgan = require('morgan');
 
 //Server setup
 var app = express();
@@ -7,6 +8,8 @@ const PORT = process.env.PORT || 5000;
 
 //Middleware
 app.use(express.json({extended: false}));
+app.use(morgan('dev'));
+app.use('/uploads', express.static("uploads"));
 
 app.listen(PORT, () =>  console.log(`Server started on port ${PORT}`));
 
