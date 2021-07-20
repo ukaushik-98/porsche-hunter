@@ -58,8 +58,8 @@ Project Specs:
     - Postgres
 
 Tools Used:
-    - Postman
-    - PGAdmin
+    - Postman - for calls
+    - PGAdmin - view DB
     - Ubuntu via WSL2 (Windows Subsystem for Linux)
 
 Future:
@@ -71,3 +71,4 @@ Future:
     - Data Validation:
         - Use Google Maps API to get user's live location OR authenticate whether input is valid
         - Gather all Porsche car data to validate user input 
+    - Add AI to validate if image is really a Porsche
