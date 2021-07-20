@@ -41,7 +41,7 @@ router.get('/', async(req,res) => {
     }
 });
 
-// @route GET api/hunts
+// @route GET api/hunts/user
 // @desc List Specific Users's Hunts - Done By Token
 // @access PRIVATE
 router.get('/user', auth,
