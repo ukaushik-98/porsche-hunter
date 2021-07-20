@@ -57,7 +57,7 @@ router.post('/', [
 ],
     async(req,res) => {
         const err = validationResult(req);  //check if validation failed
-        if (!err.isEmpty()) return res.status(400).json({errors: errors.array()});
+        if (!err.isEmpty()) return res.status(400).json({errors: err.array()});
         try {
             await db.query('BEGIN');
 
